@@ -55,7 +55,7 @@ const SelectCity: React.FC<SelectCityProps> = ({ control }) => {
                                 <SelectItem value="Gonaives">Gonaïves</SelectItem>
                                 <SelectItem value="Saint-Marc">Saint-Marc</SelectItem>
                                 <SelectItem value="Gros-Morne">Gros-Morne</SelectItem>
-                                <SelectItem value="Petite-Riviere-de-l'Artibonite">Petite-Rivière-de-l'Artibonite</SelectItem>
+                                <SelectItem value="Petite-Riviere-de-l'Artibonite">Petite-Rivière-de-l&apos;Artibonite</SelectItem>
                                 <SelectItem value="Jacmel">Jacmel</SelectItem>
                                 <SelectItem value="Marigot">Marigot</SelectItem>
                                 <SelectItem value="Cayes-Jacmel">Cayes-Jacmel</SelectItem>
@@ -66,7 +66,7 @@ const SelectCity: React.FC<SelectCityProps> = ({ control }) => {
                                 <SelectItem value="Mirebalais">Mirebalais</SelectItem>
                                 <SelectItem value="Lascahobas">Lascahobas</SelectItem>
                                 <SelectItem value="Jeremie">Jérémie</SelectItem>
-                                <SelectItem value="Anse-d'Hainault">Anse d'Hainault</SelectItem>
+                                <SelectItem value="Anse-d'Hainault">Anse d&apos;Hainault</SelectItem>
                                 <SelectItem value="Dame-Marie">Dame-Marie</SelectItem>
                                 <SelectItem value="Miragoane">Miragoâne</SelectItem>
                                 <SelectItem value="Anse-a-Veau">Anse-à-Veau</SelectItem>
