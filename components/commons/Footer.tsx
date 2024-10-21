@@ -1,9 +1,9 @@
 "use client";
 
-import { about, categories, support } from '@/Utils/footerData.js';
 import { useShowHeader } from '@/hooks/useShowHeader';
 import SocialMedia from '../SocialMedia';
 import FooterContent from './FooterContent';
+import { about, categories, support } from '@/utils/footerData';
 
 const Footer: React.FC = () => {
     const show: boolean = useShowHeader();

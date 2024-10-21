@@ -1,4 +1,9 @@
-export const about = [
+type FooterData = {
+    title: string;
+    link: string;
+}
+
+export const about: FooterData[] = [
     {
         title: "À propos de nous",
         link: ""
@@ -25,7 +30,7 @@ export const about = [
     },
 ];
 
-export const support = [
+export const support: FooterData[] = [
     {
         title: "Support d'aide",
         link: ""
@@ -48,7 +53,7 @@ export const support = [
     },
 ];
 
-export const categories = [
+export const categories: FooterData[] = [
     {
         title: "Photographie",
         link: ""
