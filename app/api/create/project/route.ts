@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma.config";
 import { UserProject } from "@/types/model";
 
-export async function POST(request: NextResponse) {
+export async function POST(request: NextRequest) {
     try {
         const projectInfo = (await request.json()) as UserProject;
 

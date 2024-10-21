@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/libs/prisma.config";
 import { Job } from "@/types/model";
 
-export async function POST(request: NextResponse) {
+export async function POST(request: NextRequest) {
     try {
         const jobInfo = (await request.json()) as Job;
 
