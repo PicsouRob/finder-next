@@ -1,113 +1,22 @@
 "use client";
 
-import React, {
-    useEffect, useState, useCallback, useRef
-} from 'react';
-import { Formik, FormikProps } from 'formik';
-import * as Yup from 'yup';
-import { useRouter, useParams } from 'next/navigation';
-import Link from 'next/link';
-import toast, { Toaster } from 'react-hot-toast';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useSession } from "next-auth/react";
-import { ArrowLeftIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { LockIcon } from 'lucide-react';
 
-import SignLeft from "@/components/SignLeft";
-import InputField from '@/components/InputField';
-import { ResetPasswordProps } from '@/types/user';
-import Error from '@/components/Error';
-import AuthSubmitButton from '@/components/AuthSubmitButton';
+import Error from '@/components/commons/Error';
+import AuthSubmitButton from '@/components/auth/AuthSubmitButton';
 import ExpiredToken from './ExpiredToken';
-
-import lock from '@/public/icons/lock.svg';
-import { newVerification } from '@/actions/new-verification';
-
-const validation = Yup.object().shape({
-    password: Yup.string().min(8, 'Le mot de passe doit être au moins de 8 caractères').required("Le mot de passe est obligatoire"),
-    confirmPassword: Yup.string().min(8, 'La confirmation mot de passe doit être au moins de 8 caractères')
-    .required("La confirmation de mot de passe est obligatoire")
-    .oneOf([Yup.ref('password'), "null"], 'Le mot de passe doit correspondre!'),
-});
+import SignLeft from '@/components/auth/SignLeft';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import Logo from '@/components/commons/Logo';
+import { useResetPassword } from '@/hooks/auth/useResetPassword';
 
 const ResetPassword: React.FC = () => {
-    const { data: session } = useSession();
-    const router: AppRouterInstance = useRouter();
-    const { jwt }: { jwt: string } = useParams();
-    const [error, setError] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isExpiredToken, setIsExpiredToken] = useState<boolean>(false);
-    const formRef = useRef<FormikProps<{ confirmPassword: string; password: string; }> | null>(null);
-    
-    const keyPress = useCallback((event: KeyboardEvent) => {
-        if (event.key === "Enter" && formRef?.current) {
-            formRef.current.handleSubmit();
-        }
-    }, []);
-    
-    const verifyToken = useCallback(() => {
-        if(!jwt) {
-            setError("Erreur de token!");
-            return;
-        }
-        
-        newVerification(jwt).then((data) => {
-            console.log({ data });
-            setIsExpiredToken(data);
-        })
-            .catch(() => {
-                console.log("Erreur");
-                setError("Il s'est produit une erreur!")
-                setIsExpiredToken(true);
-            });
-    }, [jwt]);
-    
-    useEffect(() => {
-        verifyToken();
-    }, [verifyToken]);
-    
-    useEffect(() => {
-        if(session?.user) {
-            router.push("/");
-        }
-    }, [session?.user, router]);
-
-    useEffect(() => {
-        document.addEventListener('keypress', keyPress);
-        return () => document.removeEventListener('keypress', keyPress);
-    }, [keyPress]);
-    
-    const handleSubmitForm = async (values: ResetPasswordProps) => {
-        try {
-            setError("");
-            setIsLoading(true);
-            
-            const response = await fetch("/api/auth/resetPassword", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", },
-                body: JSON.stringify({ ...values, jwtUserId: jwt })
-            });
-            
-            const result = JSON.parse(await response.json());
-            
-            if(response.ok) {
-                toast.success(`${result?.message}`, { duration: 5 });
-                router.push("/signin");
-                router.refresh();
-            } else {
-                setError(`${result?.message}`);
-            }
-            
-            setIsLoading(false);
-        } catch(error) {
-            setError(`${error}`);
-            setIsLoading(false);
-        }
-    }
+    const { form, handleSubmitForm, isLoading, error, isExpiredToken } = useResetPassword();
     
     return (
         <div className="">
             <div className="relative grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-                <Toaster />
                 <SignLeft />
             
                 <div className="flex-1 m-auto w-full">
@@ -116,9 +25,14 @@ const ResetPassword: React.FC = () => {
                             {isExpiredToken ? <ExpiredToken /> : (
                                 <div className="pb-4">
                                     <div className="mb-3">
-                                        <div className="rounded max-w-max border border-gray-200 p-2.5">
-                                            <LockClosedIcon className="h-10 w-10" />
+                                        <div className="flex items-center gap-3">
+                                            <div className="rounded max-w-max border border-gray-200 p-2.5">
+                                                <LockIcon className="h-10 w-10" />
+                                            </div>
+
+                                            <Logo />
                                         </div>
+                                        
                                         <h1
                                             className="writespace-nowrap text-3xl font-bold leading-loose tracking-wide"
                                         >
@@ -132,58 +46,48 @@ const ResetPassword: React.FC = () => {
                                         </span>
                                     </div>
                                 
-                                    <Formik
-                                        initialValues={{
-                                            password: "", confirmPassword: ""
-                                        }}
-                                        validationSchema={validation}
-                                        onSubmit={(values) => handleSubmitForm(values)}
-                                        innerRef={formRef}
-                                    >
-                                        {({ values, errors, handleSubmit, handleChange, touched }) => (
-                                            <form onSubmit={handleSubmit} className="w-full space-y-2 text-gray-700">
-                                                {error && <Error text={error} />}
-                                            
-                                                <InputField
-                                                    name="password"
-                                                    type="password"
-                                                    label="Nouveau mot de passe"
-                                                    value={values.password}
-                                                    error={errors.password}
-                                                    svg={lock}
-                                                    errorMessage={errors.password}
-                                                    handleChange={handleChange}
-                                                    placeholder="Nouveau mot de passe"
-                                                />
-                                            
-                                                <InputField
-                                                    name="confirmPassword"
-                                                    type="password"
-                                                    label="Confirmer mot de passe"
-                                                    value={values.confirmPassword}
-                                                    error={errors.confirmPassword}
-                                                    svg={lock}
-                                                    errorMessage={errors.confirmPassword}
-                                                    handleChange={handleChange}
-                                                    placeholder="Confirmer votre mot de passe"
-                                                />
-                                            
-                                                <AuthSubmitButton text="Réinitialiser mot de passe" isLoading={isLoading} />
-                                            
-                                            </form>
-                                        )}
-                                    </Formik>
+                                    <Form {...form}>
+                                        <form onSubmit={form.handleSubmit(handleSubmitForm)} className="w-full space-y-4 text-gray-700">
+                                            {error && <Error title='Reinitialisation du mot de passe' text={error} />}
+                                        
+                                            <FormField
+                                                control={form.control}
+                                                name="password"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Mot de passe</FormLabel>
+
+                                                        <FormControl>
+                                                            <Input placeholder="Votre mot de passe" {...field} />
+                                                        </FormControl>
+
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="confirmPassword"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Confirmation</FormLabel>
+
+                                                        <FormControl>
+                                                            <Input placeholder="Confirmer votre mot de passe" {...field} />
+                                                        </FormControl>
+
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        
+                                            <AuthSubmitButton text="Réinitialiser mot de passe" isLoading={isLoading} />
+                                        
+                                        </form>
+                                    </Form>
                                 </div>
                             )}
-                            <div className="pt-5">
-                                <Link
-                                    href="/signin"
-                                    className="flex items-center justify-center gap-2"
-                                >
-                                    <ArrowLeftIcon className="h-5 w-5" />
-                                    <p className="">Retour a s&lsquo;inscrire</p>
-                                </Link>
-                            </div>
                         </div>
                     </div>
                 </div>

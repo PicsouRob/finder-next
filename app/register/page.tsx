@@ -1,91 +1,24 @@
 "use client";
 
-import React, {
-    useEffect, useState, useCallback, useRef
-} from 'react';
-import { Formik, FormikProps } from 'formik';
-import * as Yup from 'yup';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import toast, { Toaster } from 'react-hot-toast';
-import { useSession } from "next-auth/react";
 
-import SignLeft from "@/components/SignLeft";
-import SignTop from '@/components/SignTop';
-import SignFooter from '@/components/SignFooter';
-import { AuthenticateValuesData } from '@/types/user';
-import Error from '@/components/Error';
-import AuthSubmitButton from '@/components/AuthSubmitButton';
-import InputField from '@/components/InputField';
+import SignFooter from '@/components/auth/SignFooter';
+import Error from '@/components/commons/Error';
+import AuthSubmitButton from '@/components/auth/AuthSubmitButton';
+import {
+    Form, FormControl, FormField, FormItem, FormLabel, FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import SignLeft from '@/components/auth/SignLeft';
+import SignTop from '@/components/auth/SignTop';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useRegister } from '@/hooks/auth/useRegister';
 
-import person from '@/public/icons/user.svg';
-import email from '@/public/icons/email.svg';
-import lock from '@/public/icons/lock.svg';
-
-const validation = Yup.object().shape({
-    name: Yup.string().required("Le nom est obligatoire"),
-    email: Yup.string().email('Addresse email incorrect')
-        .required("L'email est obligatoire"),
-    password: Yup.string().min(6, 'Le mot de passe doit être au moins de 6 caractères')
-        .required("Le mot de passe est obligatoire")
-});
-
-const Page: React.FC = () => {
-    const { data: session } = useSession();
-    const router: AppRouterInstance = useRouter();
-    const [error, setError] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const formRef = useRef<FormikProps<{ email: string; password: string; name: string; }> | null>(null);
-    
-    const keyPress = useCallback((event: KeyboardEvent) => {
-        if (event.key === "Enter" && formRef?.current) {
-            formRef.current.handleSubmit();
-        }
-    }, []);
-    
-    useEffect(() => {
-        if(session?.user) {
-            router.push("/");
-        }
-    }, [session?.user, router]);
-    
-    const handleSubmitForm = async (values: AuthenticateValuesData) => {
-        try {
-            setError("");
-            setIsLoading(true);
-            const response = await fetch("/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", },
-                body: JSON.stringify(values)
-            });
-            
-            const user = JSON.parse(await response.json());
-            
-            if(response.ok) {
-                toast.success("Votre compte a ete creer avec succes.");
-            
-                router.push("/signin");
-                router.refresh();
-            } else {
-                setError(`${user?.message}`);
-            }
-            
-            setIsLoading(false);
-        } catch(error: any) {
-            setIsLoading(false);
-            setError(`${error}`);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener('keypress', keyPress);
-        return () => document.removeEventListener('keypress', keyPress);
-    }, [keyPress]);
+const Register: React.FC = () => {
+    const { form, handleSubmitForm, isLoading, error } = useRegister();
 
     return (
         <div className="relative grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-            <Toaster />
             <SignLeft />
             
             <div className="flex-1 m-auto w-full">
@@ -96,64 +29,77 @@ const Page: React.FC = () => {
                                 text="Connectez-vous maintenant pour gérer vos compétences en toute simplicité"
                             />
                             
-                            <Formik
-                                initialValues={{
-                                    email: '', password: '', name: ''
-                                }}
-                                validationSchema={validation}
-                                onSubmit={(values) => handleSubmitForm(values)}
-                                innerRef={formRef}
-                            >
-                                {({ values, errors, handleSubmit, handleChange, touched }) => (
-                                    <form onSubmit={handleSubmit} className="w-full space-y-2 text-gray-700">
-                                        {error && <Error text={error} />}
-                                        
-                                        <InputField 
-                                            name="name"
-                                            type="text"
-                                            label="Nom et Prenom" 
-                                            value={values.name} 
-                                            error={errors.name} 
-                                            svg={person}
-                                            errorMessage={errors.name}
-                                            handleChange={handleChange}
-                                            placeholder="Votre Nom et Prenom"
-                                        />
-                                        
-                                        <InputField 
-                                            name="email"
-                                            type="email"
-                                            label="Adresse e-mail" 
-                                            value={values.email} 
-                                            error={errors.email} 
-                                            svg={email}
-                                            errorMessage={errors.email}
-                                            handleChange={handleChange}
-                                            placeholder="Votre adresse e-mail"
-                                        />
-                                        
-                                        <InputField 
-                                            name="password"
-                                            type="password"
-                                            label="Mot de passe" 
-                                            value={values.password} 
-                                            error={errors.password} 
-                                            svg={lock}
-                                            errorMessage={errors.password}
-                                            handleChange={handleChange}
-                                            placeholder="Votre mot de passe"
-                                        />
-                                        
-                                        <AuthSubmitButton text="Créer mon compte" isLoading={isLoading} />
-                                    </form>
-                                )}
-                            </Formik>
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(handleSubmitForm)} className="w-full space-y-4 text-gray-700 mt-3">
+                                    {error && <Error text={error} />}
+                                            
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Nom complet</FormLabel>
+
+                                                <FormControl>
+                                                    <Input placeholder="Example: John Doe" {...field} />
+                                                </FormControl>
+
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Addresse Électronique</FormLabel>
+
+                                                <FormControl>
+                                                    <Input placeholder="Votre adresse e-mail" {...field} />
+                                                </FormControl>
+
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="password"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Mot de passe</FormLabel>
+
+                                                <FormControl>
+                                                    <Input placeholder="Votre mot de passe" {...field} />
+                                                </FormControl>
+
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    
+                                    <div className="flex items-center space-x-2">
+                                        <Checkbox id="terms2" className='text-white' />
+                                        <label
+                                            htmlFor="terms2"
+                                            className="text-sm text-gray-500 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                        >
+                                            J&apos;acceptes les termes et les conditions d&apos;utilisations
+                                        </label>
+                                    </div>
+                                    
+                                    <AuthSubmitButton text="Créer mon compte" isLoading={isLoading} />
+                                </form>
+                            </Form>
                             
                             <div className="pt-4 pb-3">
-                                <div className="font-light text-center text-gray-500 flex-wrap space-x-1 flex items-center justify-center">
+                                <div className="font-light text-center text-gray-500 text-sm flex-wrap space-x-1 flex items-center justify-center">
                                     <div>Avez-vous déjà un compte?</div>
                                     <Link href="/signin">
-                                        <span className="font-normal text-teal-500 hover:text-teal-600">
+                                        <span className="font-normal text-primary hover:opacity-80">
                                             Connectez-vous
                                         </span>
                                     </Link>
@@ -169,4 +115,4 @@ const Page: React.FC = () => {
     );
 }
 
-export default Page;
+export default Register;

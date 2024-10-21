@@ -7,52 +7,91 @@ generator client {
 
 datasource db {
   provider     = "mongodb"
-  url          = env("DATABASE_URL")
+  url          = env("NEXT_PUBLIC_DATABASE_URL")
   relationMode = "prisma"
 }
 
 model User {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  email       String    @unique
-  password    String    @default("")
-  role        String    @default("user")
-  phone       String    @default("")
-  picture     String    @default("")
-  facebook    String    @default("")
-  instagram   String    @default("")
-  description String    @default("")
-  websiteLink String    @default("")
-  location    String    @default("")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  accounts    Account[]
-  sessions    Session[]
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  password      String
+  type          String    @default("Freelance")
+  phoneNumber   String    @default("")
+  avatar        String    @default("")
+  position      String    @default("")
+  skills        String[]
+  hourlyRate    Int       @default(0)
+  facebookUrl   String    @default("")
+  instagramUrl  String    @default("")
+  xUrl          String    @default("")
+  githubUrl     String    @default("")
+  availableFor  String    @default("En plein temps")
+  salaryRange   String    @default("")
+  backdropImage String    @default("")
+  description   String    @default("")
+  websiteUrl    String    @default("")
+  location      String    @default("")
+  dateCreated   DateTime  @default(now())
+  dateUpdated   DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model UserReview {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating          Int
+  comment         String
+  createdByUserId String
+  userId          String
+  dateCreated     DateTime @default(now())
+  dateUpdated     DateTime @updatedAt
+}
+
+model UserProject {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  type            String
+  description     String
+  images          String[]
+  createdByUserId String
+  dateCreated     DateTime @default(now())
+  dateUpdated     DateTime @updatedAt
+}
+
+model ProjectReview {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating          Int
+  comment         String
+  createdByUserId String
+  projectId       String
+  dateCreated     DateTime @default(now())
+  dateUpdated     DateTime @updatedAt
 }
 
 model Blog {
-    id          String    @id @default(auto()) @map("_id") @db.ObjectId
-    createByUserId    String
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-    title       String
-    text        String
-    images      String[]
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  createByUserId String
+  dateCreated    DateTime @default(now())
+  dateUpdated    DateTime @updatedAt
+  title          String
+  text           String
+  images         String[]
 }
 
 model Account {
-  id                 String  @id @default(cuid()) @map("_id")
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.String
-  access_token       String?  @db.String
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.String
-  session_state      String?
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -60,7 +99,7 @@ model Account {
 }
 
 model VerificationToken {
-  id         String @id @default(cuid()) @map("_id")
+  id         String   @id @default(cuid()) @map("_id")
   identifier String
   token      String   @unique
   expires    DateTime
@@ -76,9 +115,22 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Jobs {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  description String
+model Job {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  dateCreated     DateTime @default(now())
+  dateUpdated     DateTime @updatedAt
+  description     String
+  images          String[]
+  title           String
+  type            String
+  createdByUserId String
+}
+
+model JobReview {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  comment         String
+  createdByUserId String
+  jobId           String
+  dateCreated     DateTime @default(now())
+  dateUpdated     DateTime @updatedAt
 }

@@ -5,7 +5,7 @@ import slide61 from "@/public/images/workmodel.jpg";
 const FindLink: React.FC = () => {
     return (
         <div className="max-w-7xl px-6 mx-auto lg:px-8 my-12">
-            <div className="bg-primary rounded-lg overflow-hidden  p-8 md:p-16">
+            <div className="bg-gradient-to-b from-secondary relative to-[#08201D] rounded-lg overflow-hidden  p-8 md:p-16">
                 <div className="flex flex-col md:flex-row items-center relative h-full gap-6 md:gap-10">
                     <div className="space-y-5 text-white h-full">
                         <h1 className="text-3xl font-semibold">

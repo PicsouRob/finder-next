@@ -1,45 +1,91 @@
-import { useState } from 'react';
 import Image from 'next/image';
 
-import { TestimonialData, testimonial } from '@/utils/testimonial';
-import quote from "@/public/images/quote.png";
+import { testimonial } from '@/utils/testimonial';
+import Link from 'next/link';
 
 const Testimonial: React.FC = () => {
-    const [ showText, setShowText ] = useState<number>(2);
-    
     return (
-        <div className="">
-            <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 mb-10 space-y-12">
-                <div className="text-center space-y-3">
-                    <h1 className="font-semibold text-3xl lg:text-4xl xl:text-5xl">Témoignages</h1>
-                    <p className="text-base">Les témoignages de gens a propos de nous.</p>
-                </div>
-                
-                <div className="flex flex-col items-center justify-center w-full lg:w-3/4 mx-auto">
-                    <Image width="8" height="8" src={quote} alt="quote" className="h-6 w-8" />
-                    
-                    <div className="space-y-6 mt-4">
-                        <div className="text-lg text-center space-y-6 ">
-                            <p className="text-xl transition-all duration-300 ease-out">{testimonial[showText].text}</p>
-                            <div className="transition-all duration-300 ease-in">
-                                <h1 className="font-semibold">{testimonial[showText].name}</h1>
-                                <p className="text-gray-500">{testimonial[showText].occupation}</p>
-                            </div>
+        <section className="py-12 bg-gray-50 sm:py-16 lg:py-20">
+            <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="flex flex-col items-center">
+                    <div className="text-center">
+                        <p className="text-lg font-medium text-gray-600 font-pj">
+                            2 157 personnes ont dit à quel point Finder est bon
+                        </p>
+                        <h2 className="mt-4 text-3xl font-bold text-gray-900 sm:text-4xl xl:text-5xl font-pj">
+                            Ce que Nos clients disent de nous
+                        </h2>
+                    </div>
+
+                    <div className="mt-8 text-center md:mt-16 md:order-3">
+                        <Link href="/testimonials" title="" className="pb-2 text-base font-bold leading-7 text-primary transition-all duration-200 border-b-2 border-primary hover:border-primary/80 font-pj focus:outline-none focus:ring-1 focus:ring-gray-900 focus:ring-offset-2 hover:text-primary/80">
+                            Check all 2,157 reviews
+                        </Link>
+                    </div>
+
+                    <div className="relative mt-10 md:mt-24 md:order-2">
+                        <div className="absolute -inset-x-1 inset-y-16 md:-inset-x-2 md:-inset-y-6">
+                            <div className="w-full h-full max-w-5xl mx-auto rounded-3xl opacity-30 blur-lg filter testimony-gradient bg-gradient-to-r"
+                                style={{
+                                    background: "linear-gradient(90deg, #44ff9a -0.55%, #44b0ff 22.86%, #8b44ff 48.36%, #ff6644 73.33%, #ebff70 99.34%)"
+                                }}
+                            />
                         </div>
-                        
-                        <div className="flex items-center justify-center gap-x-3 md:gap-x-5">
-                            {testimonial.map(({ name, avatar }: TestimonialData, ind) => (
-                                <div key={ind} className={`${showText === ind ? "border-green-500" : "border-transparent"} border-2 p-1 rounded-full cursor-pointer transition-all duration-300 ease-out`}
-                                    onClick={() => setShowText(ind)}
-                                >
-                                    <Image width="0" height="0" src={avatar} alt={name} className="rounded-full h-12 w-12 md:h-20 md:w-20" />
+
+                        <div className="relative grid max-w-lg grid-cols-1 gap-6 mx-auto md:max-w-none lg:gap-10 md:grid-cols-3">
+                            {testimonial.map((data, index) => (
+                                <div key={index} className="flex flex-col overflow-hidden shadow-xl">
+                                    <div className="flex flex-col justify-between flex-1 p-6 bg-white lg:py-8 lg:px-7">
+                                        <div className="flex-1">
+                                            <div className="flex items-center">
+                                                <svg className="w-5 h-5 text-[#FDB241]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path
+                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                                    />
+                                                </svg>
+                                                <svg className="w-5 h-5 text-[#FDB241]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path
+                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                                    />
+                                                </svg>
+                                                <svg className="w-5 h-5 text-[#FDB241]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path
+                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                                    />
+                                                </svg>
+                                                <svg className="w-5 h-5 text-[#FDB241]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path
+                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                                    />
+                                                </svg>
+                                                <svg className="w-5 h-5 text-[#FDB241]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path
+                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                                    />
+                                                </svg>
+                                            </div>
+
+                                            <blockquote className="flex-1 mt-8">
+                                                <p className="text- leading-relaxed text-gray-900 font-pj">“{data.text}”</p>
+                                            </blockquote>
+                                        </div>
+
+                                        <div className="flex items-center mt-8">
+                                            <Image width={100} height={100} className="flex-shrink-0 object-cover rounded-full w-11 h-11" src={data.avatar} alt={data.name} />
+                                            
+                                            <div className="ml-4">
+                                                <p className="text-base font-bold text-gray-900 font-pj">{data.name}</p>
+                                                <p className="mt-0.5 text-sm font-pj text-gray-600">{data.occupation}</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 }
 

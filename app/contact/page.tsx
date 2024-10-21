@@ -1,44 +1,18 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import emailjs from 'emailjs-com';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
+import { useState } from 'react';
 import Image from 'next/image';
 
 import SocialMedia from '@/components/SocialMedia';
 import { ContactInput } from '@/types/globalTypes';
 import { ContactData, contactData } from '@/utils/data';
 
-const validation = Yup.object().shape({
-    name: Yup.string().required("Votre Nom est obligatoire"),
-    email: Yup.string().email('Addresse email incorrect')
-        .required("L'email est obligatoire"),
-    message: Yup.string().required("Le message est obligatoire")
-});
-
 const Contact: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    emailjs.init(process.env.USER_ID as string);
 
     const handleSubmitEmail = (values: ContactInput) => {
         const { name, email, message } = values;
         setIsLoading(true);
-        let alert = `Votre message a été envoyé avec succès \n Merci de nous avoir contacté`;
-        
-        const templateParams = {
-            from_name: name, email, message,
-        }
-        
-        emailjs.send(process.env.SERVICES_ID as string, process.env.TEMPLATES_ID as string, templateParams, process.env.USER_ID)
-            .then(async (response) => {
-                await window.alert(alert);
-                console.log('SUCCESS!', response.status, response.text);
-                setIsLoading(false);
-            }).catch((err) => {
-                console.log('FAILED...', err);
-                setIsLoading(false);
-            });
     }
 
     return (
@@ -93,59 +67,7 @@ const Contact: React.FC = () => {
                                 </div>
                                 
                                 <div className="pt-4">
-                                    <Formik className=""
-                                        initialValues={{ name: '', email: '', message: '' }}
-                                        validationSchema={validation}
-                                        onSubmit={(values) => handleSubmitEmail(values)}
-                                    >
-                                        {({ values, errors, handleSubmit, handleChange, touched }) => (
-                                            <form className="w-full" onSubmit={handleSubmit}>
-                                                <div className="grid lg:grid-cols-2 gap-y-4 gap-x-5">
-                                                    <div className="">
-                                                        <label className="font-medium">Nom et Prénom</label>
-                                                        <input type="text" name="name"
-                                                            value={values.name}
-                                                            onChange={handleChange}
-                                                            placeholder="Entrez votre nom complet"
-                                                            className="px-3 py-3 w-full text-[15px] text-black placeholder:text-gray-600 focus:outline-none font-light border focus:ring-0 my-2 rounded border-gray-200"
-                                                        />
-                                                        {errors.name && touched.name && (
-                                                            <p className="text-red-700">{errors.name}</p>
-                                                        )}
-                                                    </div>
-                                                    
-                                                    <div className="">
-                                                        <label className="font-medium">Courrier électronique</label>
-                                                        <input type="text" name="email"
-                                                            value={values.email}
-                                                            onChange={handleChange} placeholder="Entrez votre courrier"
-                                                            className="px-3 py-3 w-full text-[15px] placeholder:text-gray-600 focus:outline-none font-light border focus:ring-0 my-2 rounded border-gray-200"
-                                                        />
-                                                        {errors.email && touched.email && (
-                                                            <p className="text-red-700">{errors.email}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                
-                                                <label className="pt-3 font-medium">Message</label>
-                                                <textarea name="message"
-                                                    value={values.message} onChange={handleChange}
-                                                    placeholder="Entrez votre message"
-                                                    className="px-4 pt-2 placeholder:text-gray-600 w-full focus:outline-none border focus:ring-0 text-[15px] my-2 rounded resize-y h-60 border-gray-200"
-                                                ></textarea>
-                                                {errors.message && touched.message && (
-                                                    <p className="text-red-700">{errors.message}</p>
-                                                )}
-                                                
-                                                <button type="submit"
-                                                    className="flex items-center justify-center gap-x-2 w-full sm:w-40 bg-primary rounded px-12 py-2.5 text-white font-medium mt-3 hover:opacity-90" disabled={isLoading}
-                                                >
-                                                    {isLoading && <i className="fa fa-spinner fa-spin"></i>}
-                                                    Envoyer
-                                                </button>
-                                            </form>
-                                        )}
-                                    </Formik>
+                                    
                                 </div>
                             </div>
                         </div>

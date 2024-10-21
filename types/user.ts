@@ -28,11 +28,22 @@ export type ResetPasswordProps = {
 
 export interface AuthenticateValuesData extends SignInData {
     name: string,
+    type: string
 }
 
-export interface ResetPasswordEmailTemplateProps {
-    name: string,
-    url: string,
-    email: string,
-    year?: number
+interface CompletedSignupProps {
+
+    type: string,
+    icon: string,
 }
+
+export const completedSignupUserType: CompletedSignupProps[] = [
+    {
+        type: "Freelancer",
+        icon: "https://finder.app/images/icons/freelancer.svg"
+    },
+    {
+        type: "Ambaucheur",
+        icon: "https://finder.app/images/icons/ambaucher.svg"
+    },
+];

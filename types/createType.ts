@@ -11,3 +11,4 @@ export type BlogData = {
     createdAt?: DateTime,
     updatedAt?: DateTime
 };
+

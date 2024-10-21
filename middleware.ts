@@ -1,22 +1,17 @@
-import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export default withAuth(
-    function middleware(request: NextRequestWithAuth) {
-        const absoluteUrl: URL = new URL('/', request.nextUrl.origin);
+export async function middleware(request: NextRequest) { 
+    const session = request.cookies.get("next-auth.session-token");
 
-        if(
-            request.nextUrl.pathname.startsWith("/add-blog") &&
-            request.nextauth.token?.role != "admin"
-        ) {
-            return NextResponse.redirect(absoluteUrl);
-        }
-    }, {
-    callbacks: {
-        authorized: ({ token }) => !!token,
+    // is the user is authenticated, continue to the next middleware
+    if (session) {
+        return NextResponse.next();
     }
-});
+
+    // if the user is not authenticated, redirect to the login page
+    return NextResponse.redirect(new URL("/signin", request.url));
+}
 
 export const config = {
-    matcher: ["/add-kills", "/add-blog", "/add-job"],
+    matcher: ["/dashboard/:path*"],
 }

@@ -2,24 +2,12 @@ import { MenuData } from "@/types/globalTypes";
 
 export const menuData: MenuData[] = [
     {
-        title: "Accueil",
-        to: "/",
-    },
-    {
         title: "Freelancers",
         to: "/search/freelancers",
     },
     {
-        title: "Jobs",
+        title: "Touve un travail",
         to: "/search/jobs",
-    },
-    {
-        title: "Blog",
-        to: "/blog",
-    },
-    {
-        title: "À propos",
-        to: "/about",
     },
     {
         title: "Contact",
@@ -56,5 +44,33 @@ export const contactData: ContactData[] = [
         title: "Adresse",
         text: "102 Street Saint-Marc",
         open: "tel:+18094298594",
+    },
+];
+
+interface ProfileSelectedOptionProps {
+    index: number,
+    title: string,
+}
+
+export const profileOptions: ProfileSelectedOptionProps[] = [
+    {
+        index: 0,
+        title: "À propos",
+    },
+    {
+        index: 1,
+        title: "Projet",
+    },
+    {
+        index: 2,
+        title: "Travail Publié",
+    },
+    {
+        index: 3,
+        title: "Commentaire",
+    },
+    {
+        index: 4,
+        title: "Travail Qui peut m'interesser",
     },
 ];
