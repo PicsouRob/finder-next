@@ -4,10 +4,16 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
         "start": "next start",
         "lint": "next lint",
+        "vercel-build": "npx prisma generate && next build",
+        "prisma generate": "npx prisma generate",
+        "generate": "npx prisma generate",
+        "build": "npx prisma generate && next build",
         "postinstall": "prisma generate"
+    },
+    "prisma": {
+        "schema": "prisma/schema.prisma"
     },
     "dependencies": {
         "@hookform/resolvers": "^3.9.0",
