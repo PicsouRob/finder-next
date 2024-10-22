@@ -14,12 +14,12 @@ export const authOptions: NextAuthOptions = {
         signIn: "/signin",
         signOut: '/auth/signout',
     },
-    secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET,
     session: {
         strategy: "jwt",
     },
     jwt: {
-        secret: process.env.NEXT_PUBLIC_JWT_USER_ID_SECRET,
+        secret: process.env.JWT_USER_ID_SECRET,
     },
     debug: true,
     adapter: PrismaAdapter(prisma),
@@ -75,8 +75,8 @@ export const authOptions: NextAuthOptions = {
         GoogleProvider({
             id: "google",
             name: "Google",
-            clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string,
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
             allowDangerousEmailAccountLinking: true,
             authorization: {
                 params: {
